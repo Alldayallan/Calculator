@@ -19,13 +19,13 @@ enum CalcButton: String {
     case add = "+"
     case subtract = "-"
     case divide = "÷"
-    case multiply = "⨯"
+    case multiply = "x"
     case equal = "="
     case clear = "AC"
     case decimal = "."
     case percent = "%"
     case negative = "IMGplus.forwardslash.minus"
-    case undo = "IMGarrow counterclockwise"
+    case undo = "IMGarrow.counterclockwise"
 }
 
 let enumOperators: [CalcButton] = [.subtract, .add, .divide, .multiply]

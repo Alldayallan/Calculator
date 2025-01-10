@@ -63,12 +63,14 @@ struct CalcsButtonsView: View {
                             print("Button pressed")
                         }, label: {
                             ButtonView(calcButton: calcButtonModel.calcButton,
-                                       fgColor: calcButtonModel.color, bgColor: buttonBackgroundColor)
+                                       fgColor: calcButtonModel.color, bgColor: primaryBackgroundColor)
                         })
                     }
                 }
             }
         }
+        .padding()
+        .background(secondaryBackgroundColor.cornerRadius(20))
     }
 }
 
