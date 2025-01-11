@@ -34,7 +34,7 @@ struct CalcsButtonsView: View {
             CalcButtonModel(calcButton: .four),
             CalcButtonModel(calcButton: .five),
             CalcButtonModel(calcButton: .six),
-            CalcButtonModel(calcButton: .divide, color: foregroundRightButtonsColor)
+            CalcButtonModel(calcButton: .subtract, color: foregroundRightButtonsColor)
         ]),
         
         RowOfCalcButtonsModel(row: [
@@ -60,7 +60,9 @@ struct CalcsButtonsView: View {
                         calcButtonModel in
                         Button(action: {
                             // Logic here
-                            print("Button pressed")
+                            buttonPressed(calcButton: calcButtonModel.calcButton)
+                            
+                            
                         }, label: {
                             ButtonView(calcButton: calcButtonModel.calcButton,
                                        fgColor: calcButtonModel.color, bgColor: primaryBackgroundColor)
@@ -71,6 +73,97 @@ struct CalcsButtonsView: View {
         }
         .padding()
         .background(secondaryBackgroundColor.cornerRadius(20))
+    }
+    
+    func buttonPressed(calcButton: CalcButton) {
+        // Logic
+        switch calcButton {
+        case .clear:
+            currentComputation = ""
+            mainResult = "0"
+         
+        case .equal, .negative:
+            if !currentComputation.isEmpty {
+                if !lastCharacterIsAnOperator(str: currentComputation) {
+                    let sign = calcButton == .negative ? -1.0 : 1.0
+                    
+                    mainResult = formatResult(val: sign * calculateResults())
+                    
+                    if calcButton == .negative {
+                        currentComputation = mainResult
+                    }
+                }
+            }
+            
+        case .decimal:
+            if let lastOccurenceOfDecimal = currentComputation.lastIndex(of: ".") {
+                if lastCharIsDigit(str: currentComputation) {
+                    let startIndex = currentComputation.index(lastOccurenceOfDecimal, offsetBy: 1)
+                    let endIndex = currentComputation.endIndex
+                    let range = startIndex..<endIndex
+                    
+                    let rightSubString = String(currentComputation[range])
+                    
+                    ///
+                    /// Only have digits to the right "."
+                    /// do not add another "."
+                    /// otherwise add another deimal point
+                    if Int(rightSubString) == nil && !rightSubString.isEmpty {
+                        currentComputation += "."
+                    }
+            
+                }
+            } else {
+                if currentComputation.isEmpty {
+                    currentComputation += "0."
+                } else if
+                    lastCharIsDigit(str: currentComputation) {
+                    currentComputation += "."
+                }
+            }
+            
+        case .percent:
+            if lastCharIsDigit(str: currentComputation) {
+                appendToCurrentComputation(calcButton: calcButton)
+            }
+            
+        case .undo:
+            
+            currentComputation = String(currentComputation.dropLast())
+            
+        case .add, .subtract, .divide, .multiply:
+            if lastCharIsDigitOrPercent(str: currentComputation) {
+                appendToCurrentComputation(calcButton: calcButton)
+            }
+        
+        default:
+            // need more
+            appendToCurrentComputation(calcButton: calcButton)
+        }
+    }
+    
+    // Implements the computation
+    func calculateResults() -> Double {
+        let visibleWorkings: String = currentComputation
+        var workings = visibleWorkings.replacingOccurrences(of: "%", with: "*0.01")
+        workings = workings.replacingOccurrences(of: multiplySymbol, with: "*")
+        workings = workings.replacingOccurrences(of: divisionSymbol, with: "/")
+        
+        // If there is "35." it will be replaced with "35.0"
+        if getLastChar(str: visibleWorkings) == "." {
+            workings += "0"
+        }
+        
+        // Key point !
+        // Computation
+        let expr = NSExpression(format: workings)
+        let exprValue = expr.expressionValue(with: nil, context: nil) as! Double
+        
+        return exprValue
+    }
+    
+    func appendToCurrentComputation(calcButton: CalcButton) {
+        currentComputation += calcButton.rawValue
     }
 }
 

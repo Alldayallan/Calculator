@@ -10,7 +10,7 @@ func getLastChar(str: String) -> String {
 
 ///
 /// Return true if last character of str is equal to char
-func lastCharacterIsEqualTo(str: String, char: String) -> Bool {
+func lastCharacterISEqualTo(str: String, char: String) -> Bool {
     let last = getLastChar(str: str)
     return last == char
 }
@@ -24,3 +24,17 @@ func formatResult(val: Double) -> String {
         .string(
             from: NSNumber(value: val)) ?? "0"
 }
+
+func lastCharIsDigit(str: String) -> Bool {
+    return "0123456789".contains(getLastChar(str: str))
+}
+
+func lastCharIsDigitOrPercent(str: String) -> Bool {
+    return "0123456789%".contains(getLastChar(str: str))
+}
+
+func lastCharacterIsAnOperator(str: String) -> Bool {
+    let last = getLastChar(str: str)
+    return operators.contains(last)
+}
+
