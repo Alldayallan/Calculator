@@ -15,6 +15,7 @@ struct RowOfCalcButtonsModel: Identifiable {
 struct CalcsButtonsView: View {
     @Binding var currentComputation: String
     @Binding var mainResult: String
+    let width: CGFloat
     
     let buttonData: [RowOfCalcButtonsModel] = [
         RowOfCalcButtonsModel(row: [
@@ -64,15 +65,20 @@ struct CalcsButtonsView: View {
                             
                             
                         }, label: {
-                            ButtonView(calcButton: calcButtonModel.calcButton,
-                                       fgColor: calcButtonModel.color, bgColor: primaryBackgroundColor)
+                            ButtonView(
+                                calcButton: calcButtonModel.calcButton,
+                                fgColor: calcButtonModel.color,
+                                bgColor: buttonBackgroundColor,
+                                width: width)
                         })
                     }
                 }
             }
         }
         .padding()
-        .background(secondaryBackgroundColor.cornerRadius(20))
+        .background(
+            secondaryBackgroundColor
+                .cornerRadius(UIDevice.isIPad ? 50 : 20))
     }
     
     func buttonPressed(calcButton: CalcButton) {
@@ -169,8 +175,8 @@ struct CalcsButtonsView: View {
 
 
 struct CalcsButtonsView_Previews: PreviewProvider {
-        static var previews: some View {
-            CalcsButtonsView(currentComputation: .constant("5+1"), mainResult: .constant("6"))
-        }
+    static var previews: some View {
+        CalcsButtonsView(currentComputation: .constant("5+1"), mainResult: .constant("6"),
+                         width: 375)
     }
-
+}

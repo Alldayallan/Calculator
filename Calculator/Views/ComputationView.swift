@@ -9,7 +9,9 @@ struct ComputationView: View {
         VStack(spacing: 10) {
             HStack {
                 Spacer()
-                Text(currentComputation).foregroundColor(foregroundDigitsColor).lineLimit(1)
+                Text(currentComputation).foregroundColor(foregroundDigitsColor)
+                    .font(UIDevice.isIPad ? .largeTitle : .body)
+                    .lineLimit(1)
             }
             .minimumScaleFactor(0.1)
             
